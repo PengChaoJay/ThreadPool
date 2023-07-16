@@ -15,3 +15,7 @@ auto result = pool.enqueue([](int answer) { return answer; }, 42);
 std::cout << result.get() << std::endl;
 
 ```
+Build && Run
+```c++
+g++ -o example example.cpp -std=c++11 -pthread && ./example
+```
