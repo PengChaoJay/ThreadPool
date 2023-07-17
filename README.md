@@ -73,3 +73,16 @@ inline ThreadPool::ThreadPool(size_t threads)
 ```
     
 函数是一个内联函数，指定创建线程是数目，初始化线程池 stop为false ，表示线程池启动着
+lambda表达式的格式为：
+
+[ 捕获 ] ( 形参 ) 说明符(可选) 异常说明 attr -> 返回类型 { 函数体 }
+该lambda表达式捕获线程池指针this用于在函数体中使用（调用线程池成员变量stop、tasks等）
+分析函数体，for(;;)为一个死循环，表示每个线程都会反复这样执行，这其实每个线程池中的线程都会这样。
+在循环中，，先创建一个封装void()函数的std::function对象task，用于接收后续从任务队列中弹出的真实任务。
+其中
+```c++
+
+      std::unique_lock<std::mutex> lock(this->queue_mutex);
+```
+
+可以在退出作用域时候，自动解锁，｛｝表示作用域在退出｝时，自动当入到 Quenue_mutex线程池中。
